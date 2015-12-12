@@ -1,4 +1,3 @@
-
 'use strict';
 
 angular.module('LD34.game', ['ngRoute'])
@@ -17,7 +16,8 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.button1cost = 50;
     $scope.button2cost = 30;
     $scope.dayMax = 20;
-    $scope.supply1 = 20;
+    $scope.supply1 = 30;
+    $scope.multiplier = 1.0;
     $scope.supply2 = 50;
     $scope.demand1 = 30;
     $scope.demand2 = 50;
@@ -25,6 +25,14 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.funding = {president: 0};
     $scope.allowPresidencyRun = false;
     $scope.presidencyRun = false;
+    $scope.president = {
+      isPresident: false,
+      heldRallys: 0,
+      approval: 20,
+      required: 51,
+      timeleft: 15
+    };
+   
     $scope.production = {
       quality: 50,
       quantity1: 5,
@@ -33,6 +41,16 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.profit = 0;
     $scope.getProfit = function() {
       
+    };
+
+    $scope.getRallyCost = function() {
+      return 500 * Math.pow(2, $scope.president.heldRallys); 
+    };
+
+    $scope.holdRally = function() {
+      $scope.money -= $scope.getRallyCost();
+      $scope.president.approval += 10;
+      $scope.president.heldRallys += 1;
     };
 
     $scope.retail = {
@@ -45,6 +63,9 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.ticksPassed = 0;
     $scope.qualitySum = 0;
     $scope.qualityAverage = 0;
+
+    $scope.demandMulti = 1;
+    $scope.manufactureMulti = 1;
 
     $scope.update = function() {
       $scope.$broadcast("timer-stop");
@@ -72,13 +93,13 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.priceArray2.push(newPrice2);
 
       //Number of buttons bought
-      var numberBought1 = 1+Math.floor(0.2*Math.exp(Math.E, ($scope.supply1 - $scope.demand1)*Math.random()));
-      var numberBought2 = 1+Math.floor(0.2*Math.exp(Math.E, ($scope.supply2 - $scope.demand2)*Math.random())); 
+      var numberBought1 = 1+Math.floor(0.2*Math.pow(Math.E, ($scope.supply1 - $scope.demand1)*Math.random()));
+      var numberBought2 = 1+Math.floor(0.2*Math.pow(Math.E, ($scope.supply2 - $scope.demand2)*Math.random())); 
       $scope.supply1 -= numberBought1;
       $scope.supply2 -= numberBought2; 
       
-      var numberMade1 = 1+Math.floor(5*Math.random()); 
-      var numberMade2 = 1+Math.floor(5*Math.random());
+      var numberMade1 = 1+Math.floor(15*Math.random())*($scope.demand1-$scope.supply1>20?2:1); 
+      var numberMade2 = 1+Math.floor(15*Math.random())*($scope.demand2-$scope.supply2>20?2:1);
       if ($scope.supply1 > $scope.demand1) {
         numberMade1 = 0;
       }
@@ -91,8 +112,10 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.competitorsMade2 = numberMade2;
       if ($scope.supply1 < 0) $scope.supply1 = 0;
       if ($scope.supply2 < 0) $scope.supply2 = 0;
-      $scope.demand1 -= Math.floor(5*Math.random()*(Math.random()>0.5?1:-1))
-      $scope.demand2 -= Math.floor(15*Math.random()*(Math.random()>0.5?1:-1));
+      $scope.demand1 += Math.floor(10*Math.random()*(Math.random()>(0.5)?$scope.demandMulti:-1))
+      $scope.demand2 += Math.floor(10*Math.random()*(Math.random()>(0.5)?$scope.demandMulti:-1));
+      if ($scope.demand1 < 10) $scope.demand1 +=5;
+      if ($scope.demand2 < 10) $scope.demand2 +=5;
       if ($scope.demand1 < 0) $scope.demand1 = 0;
       if ($scope.demand2 < 0) $scope.demand2 = 0;
       var karr = [];
@@ -102,7 +125,7 @@ angular.module('LD34.game', ['ngRoute'])
       var data = {x: karr, y: $scope.priceArray1, name: "Button 1", type: 'scatter'};       
         var data2 = {x: karr, y: $scope.priceArray2, name: "Button 2",  type: 'scatter'};
         var layout = {title: "Button Market", yaxis: { title: "Price ($)" }, 
-                      xaxis: {title: "Days"},margin: {l: 40, r: 30,  b: 30, t: 30}};
+                      width: 300, height: 200, autosize: false, xaxis: {title: "Days"},margin: {l: 40, r: 30,  b: 30, t: 30}};
       Plotly.newPlot("graph", [data, data2], layout);
 
       //Manufacture buttons
@@ -111,8 +134,8 @@ angular.module('LD34.game', ['ngRoute'])
       var lastMoney = $scope.money;
       $scope.money -= $scope.production.quantity1 * $scope.getPrice1();
       $scope.money -= $scope.production.quantity2 * $scope.getPrice2();
-      $scope.money += $scope.retail.quantity1 * $scope.priceArray1[$scope.dayMax];
-      $scope.money += $scope.retail.quantity2 * $scope.priceArray2[$scope.dayMax];
+      $scope.money += $scope.multiplier * $scope.retail.quantity1 * $scope.priceArray1[$scope.dayMax];
+      $scope.money += $scope.multiplier * $scope.retail.quantity2 * $scope.priceArray2[$scope.dayMax];
       $scope.money -= $scope.funding.president;
       $scope.profit =  $scope.money - lastMoney;
       $scope.supply1 += parseInt($scope.retail.quantity1);
@@ -123,6 +146,8 @@ angular.module('LD34.game', ['ngRoute'])
         $scope.production.quantity2 = 0;
         $scope.retail.quantity1 = 0;
         $scope.retail.quantity2 = 0;
+        $scope.presidencyRun = false;
+        alert("You are broke! Sell off your stored buttons and attempt not to go bankrupt.");
       };
       
       $scope.ticksPassed += 1;
@@ -136,11 +161,43 @@ angular.module('LD34.game', ['ngRoute'])
         $scope.allowPresidencyRun = false;
       }
 
+      //Presidency run
+      if ($scope.presidencyRun) {
+        if ($scope.president.timeleft > 0) {
+          $scope.president.timeleft-=1;
+          if (Math.random() > 0.9) {
+            var amount = Math.floor(1500 * Math.random());
+            alert("You have recieved a donation of $" + amount +" to help you become president");
+            $scope.money += amount;
+          };
+          $scope.president.approval += $scope.funding.president / 500;
+        } else {
+          $scope.presidencyRun = false;
+          if ($scope.president.approval > $scope.president.required) {
+            //YAYYY WINNER!
+            $scope.president.isPresident = true;
+            alert("We will now inaugerate Mr Trump as God-King of the americas"); 
+          }
+        }
+      }
+
     };
     
     $scope.runForPresident = function() {
+      if (confirm("Run for president?")) {
       $scope.presidencyRun = true;
       $scope.allowPresidencyRun = false;
+      $scope.funding.president = 50;
+      $scope.president.timeleft = 5;
+      }
+    } 
+   
+    $scope.buildTheWall = function() {
+      if (confirm("Build a wall on the mexican border? This will cost $5000, but will increase demand due to the patriots buying american-made products. Manufacture price will increase though, due to lack of cheap mexican workers. Continue?")) {
+        $scope.wallBuilt = true;
+        $scope.manufactureMulti = 1.5;
+        $scope.demandMulti = 1.5;
+      }
     } 
 
     $scope.updateQuantity = function () {
@@ -151,11 +208,11 @@ angular.module('LD34.game', ['ngRoute'])
     };
 
     $scope.getPrice1 = function () {
-      return ($scope.production.quality/100) * $scope.priceArray1[$scope.dayMax];
+      return $scope.manufactureMulti * ($scope.production.quality/100) * $scope.priceArray1[$scope.dayMax];
     }
 
     $scope.getPrice2 = function () {
-      return ($scope.production.quality/100) * $scope.priceArray2[$scope.dayMax];
+      return $scope.manufactureMulti*($scope.production.quality/100) * $scope.priceArray2[$scope.dayMax];
     };
 
     $scope.getMaxProd1 = function() {
@@ -185,7 +242,7 @@ angular.module('LD34.game', ['ngRoute'])
     };
     $scope.sellButton1 = function() {
       if ($scope.button1stock > 0) {
-        $scope.money += $scope.priceArray1[$scope.dayMax];
+        $scope.money += $scope.multiplier * $scope.priceArray1[$scope.dayMax];
         $scope.button1stock -= 1;
         $scope.supply1+=1;
       }
@@ -203,7 +260,7 @@ angular.module('LD34.game', ['ngRoute'])
     };
     $scope.sellButton2 = function() {
       if ($scope.button2stock > 0) {
-        $scope.money += $scope.priceArray2[$scope.dayMax];
+        $scope.money += $scope.multiplier * $scope.priceArray2[$scope.dayMax];
         $scope.button2stock -= 1;
         $scope.supply2 += 1;
       }

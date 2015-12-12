@@ -1,5 +1,6 @@
 <div ng-controller="game-Ctrl">
-  <h2>Trump Inc</h2>
+  <h2 ng-if="!president.isPresident">Trump Inc</h2>
+  <h2 ng-if="president.isPresident">Royal Trump Incorporated</h2>
     <timer countdown="10" interval="1000" finish-callback="update()">Time unil next day: {{countdown}}</timer>
     <table> 
       <tr>
@@ -7,16 +8,17 @@
           <div id="graph"></div> 
         </td>
         <td>
-          <img ng-if="!presidencyRun" src="res/img/trump-head.png" alt="TRUMP HEAD">
+          <img ng-if="!presidencyRun && !president.isPresident" src="res/img/trump-head.png" alt="TRUMP HEAD">
           <img ng-if="presidencyRun" src="res/img/trump-presidency.png" alt="TRUMP HEAD">
+          <img ng-if="president.isPresident" src="res/img/god-king-trump.png" alt="GOD KING">
         </td>
         <td>
-          <p class="{red: money > 0}">Funds: {{ money | currency }}</p></br>
+          <h2 class="{red: money > 0}">Funds: {{ money | currency }}</h2></br>
           Allocated Budget: {{getBudgetUsed()|currency}}</br>
-          <div ng-if="profit >= 0">Profit: {{profit|currency}}</div>
-          <div ng-if="profit < 0">Loss: {{profit|currency}}</div>
-          Button 1 stock: {{ button1stock }}</br>
-          Button 2 stock: {{ button2stock }}</br>
+          <div ng-if="profit >= 0" class="green">Profit: {{profit|currency}}</div>
+          <div ng-if="profit < 0" class="red">Loss: {{profit|currency}}</div>
+          <img src="res/img/button-1.png" alt="b"> Button 1 stock: {{ button1stock }}</br>
+          <img src="res/img/button-2.png" alt="b"> Button 2 stock: {{ button2stock }}</br>
           Supply : {{supply1}}, {{supply2}}</br>
           Demand : {{demand1}}, {{demand2}}</br>
           Average Quality: {{qualityAverage/100 | percentage:2}}<br><br><!--HUEHUEHUE-->
@@ -27,43 +29,69 @@
         <td>
           <div>
             <label for="quality">Production Quality: {{production.quality}}%</label>
-            <input type="range" min="1" max="100" name="quality" 
+            <input type="range" class="slider" min="1" max="100" name="quality" 
                   ng-model="production.quality">
-            <label for="quantity1">Button 1 Production count: {{production.quantity1}} (max {{getMaxProd1()}} at {{getPrice1()|currency}})</label>
-            <input type="range" min="0" max={{getMaxProd1()}} ng-change="updateQuantity()" ng-model="production.quantity1">
+            <label for="quantity1"><img src="res/img/button-1.png" alt="b"> Button 1 Production count: {{production.quantity1}} (max {{getMaxProd1()}} at {{getPrice1()|currency}})</label>
+            <input type="range" class="slider" min="0" max={{getMaxProd1()}} ng-change="updateQuantity()" ng-model="production.quantity1">
             
-            <label for="quantity1">Button 2 Production count: {{production.quantity2}} (max {{getMaxProd2()}} at {{getPrice2()|currency}})</label>
-          <input type="range" min="0" max={{getMaxProd2()}} ng-change="updateQuantity()" ng-model="production.quantity2">
+            <label for="quantity1"><img src="res/img/button-2.png" alt="b"> Button 2 Production count: {{production.quantity2}} (max {{getMaxProd2()}} at {{getPrice2()|currency}})</label>
+          <input type="range" class="slider" min="0" max={{getMaxProd2()}} ng-change="updateQuantity()" ng-model="production.quantity2">
           </input>
-          <label for="quantity1">Daily Button1 Shipping: {{retail.quantity1}} (max {{production.quantity1}})</label>
-          <input type="range" min="0" max={{production.quantity1}} ng-model ="retail.quantity1">
+          <label for="quantity1">Daily <img src="res/img/button-1.png" alt="b"> Button1 Shipping: {{retail.quantity1}} (max {{production.quantity1}})</label>
+          <input type="range" class="slider" min="0" max={{production.quantity1}} ng-model ="retail.quantity1">
           </input>
-          <label for="quantity2">Daily Button2 Shipping: {{retail.quantity2}} (max {{production.quantity2}})</label>
-          <input type="range" min="0" max={{production.quantity2}} ng-model ="retail.quantity2">
+          <label for="quantity2">Daily <img src="res/img/button-2.png" alt="b"> Button2 Shipping: {{retail.quantity2}} (max {{production.quantity2}})</label>
+          <input type="range" class="slider" min="0" max={{production.quantity2}} ng-model ="retail.quantity2">
           </input>
           <div ng-if="presidencyRun">
           <label>Presidency Funding: {{funding.president|currency}}</label>
-          <input type="range" min="0" max={{money}} ng-model="funding.president"></input>
+          <input type="range" class="slider" min="0" max={{money}} ng-model="funding.president"></input>
           </div>
           </div>
         </td>
         <td>
-          <img src="res/img/trump-body.png" alt="TRUMP BODY">
+          <img ng-if="!president.isPresident" src="res/img/trump-body.png" alt="TRUMP BODY">
+          <img ng-if="president.isPresident" src="res/img/trump-pres-body.png" alt="TRUMP BODY">
         </td>
         <td>
-          <button ng-click="buyButton1()" class="btn">Buy Button 1 ({{priceArray1[dayMax]|currency}})</button><br>
-          <button ng-click="buyButton2()" class="btn">Buy Button 2 ({{priceArray2[dayMax]|currency}})</button><br>
-         <button ng-click="sellButton1()" class="btn">Sell Button 1 ({{priceArray1[dayMax]|currency}})</button><br>
-          <button ng-click="sellButton2()" class="btn">Sell Button 2 ({{priceArray2[dayMax]|currency}})</button><br>        
+          <button ng-click="buyButton1()" class="btn">Buy <img src="res/img/button-1.png" alt="b"> Button 1 ({{priceArray1[dayMax]|currency}})</button><br>
+          <br><button ng-click="buyButton2()" class="btn">Buy <img src="res/img/button-2.png" alt="b"> Button 2 ({{priceArray2[dayMax]|currency}})</button><br>
+         <br><button ng-click="sellButton1()" class="btn">Sell <img src="res/img/button-1.png" alt="b"> Button 1 ({{priceArray1[dayMax]*multiplier|currency}})</button><br>
+          <br><button ng-click="sellButton2()" class="btn">Sell <img src="res/img/button-2.png" alt="b"> Button 2 ({{priceArray2[dayMax]*multiplier|currency}})</button><br>        
       </td>
      </tr>
       <tr>
         <td>
-          <h3 ng-if="qualityAverage < 60">Increase average quality to 60% to run for president!</h3>
-        <button ng-if="!presidencyRun && allowPresidencyRun" ng-click="runForPresident()" class="btn">Run for president!</button>
+          <h3 ng-if="qualityAverage < 60">Increase average quality<br> to 60% to run for president!</h3>
+        <button ng-if="!president.isPresident && !presidencyRun && allowPresidencyRun" ng-click="runForPresident()" class="btn">Run for president!</button>
+
+        <div ng-if="presidencyRun">
+          <!-- Anything presidency related -->
+          <h4> Days left: {{president.timeleft}}</h4>
+          <p> Approval Rating: {{president.approval}} (need {{president.required}})</p>
+          <p> Approval Change per month: {{funding.president / 50000 | percentage:2}}</p>
+          <button class="btn" ng-click="holdRally()">Hold Rally! (+10 approval, cost: {{getRallyCost()|currency}})</button>
+        </div>
+
+        <div ng-if="!presidencyRun">
+          <!-- Anything non-president related-->
+        </div>
         </td>
-        <td><img src="res/img/trump-stump.png" alt="TRUMP STUMP"></td>
-        <td>SELL BUTTON</td>
+        <td>
+          <img ng-if="!president.isPresident" src="res/img/trump-stump.png" alt="TRUMP STUMP">
+          <img ng-if="president.isPresident" src="res/img/trump-pres-stump.png" alt="TRUMP STUMP">  
+        </td>
+        <td>
+          <div ng-if="president.isPresident">
+            <h4>Presidential Actions</h4>
+            <button ng-if="!wallBuilt && qualityAverage > 75" class="btn" ng-click="buildTheWall()">
+              Build the great mexican wall ($5000)
+            </button>
+            <button ng-if"!internetClosed && qualityAverage > 70 && ticksPassed > 40" ng-click="closeInternet()">
+              Close up the internet ($7500)
+            </button> 
+          </div>
+        </td>
       </tr>
     </table>
   <script type="text/javascript-lazy">
@@ -93,9 +121,9 @@
         scope.$apply(c);
       } 
 
-      var data = {x: karr, y: priceArray, name: "Button 1", type: 'scatter'};       
+      var data = {x: karr, y: priceArray, name: "Button-1", type: 'scatter'};       
       var data2 = {x: karr, y: priceArray2, name: "Button 2",  type: 'scatter'};
-      var layout = {title: "Button Market", yaxis: { title: "Price ($)" }, 
+      var layout = {title: "Button Market", width: 300, height: 200, autosize: false, yaxis: { title: "Price ($)" }, 
                     xaxis: {title: "Days"}, margin: {l: 40, b: 30, t: 30, r:30}};
       Plotly.newPlot("graph", [data, data2], layout);
   </script>
