@@ -10,12 +10,13 @@ $dark_text: #212121;
 $secondary_text: #727272;
 $divider: #B6B6B6;
 
-
+table {
+  width:100%;
+}
 .jumbotron {
-    padding: 6% 6% 6% 6% !important;
     text-align: center;
     color: $dark_text;
-
+    width: 100%;
     i {
       color: $dark-text;
     }
@@ -37,10 +38,6 @@ $divider: #B6B6B6;
       color: $accent;
     }
 
-    #game {
-      text-align: center;
-      padding: 3% 5% 3% 20%;
-    }
 }
 
 .bar {
@@ -96,6 +93,7 @@ strong {
 }
 html, body {
     height: 91%;
+    width: 100%;
 }
 
 #wrap {

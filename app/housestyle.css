@@ -1,7 +1,10 @@
+table {
+  width: 100%; }
+
 .jumbotron {
-  padding: 6% 6% 6% 6% !important;
   text-align: center;
-  color: #212121; }
+  color: #212121;
+  width: 100%; }
   .jumbotron i {
     color: #212121; }
   .jumbotron button {
@@ -14,9 +17,6 @@
       color: #fff; }
   .jumbotron button:hover {
     color: #00BCD4; }
-  .jumbotron #game {
-    text-align: center;
-    padding: 3% 5% 3% 20%; }
 
 .bar {
   text-align: center; }
@@ -48,7 +48,8 @@ strong {
   font-size: 100%; }
 
 html, body {
-  height: 91%; }
+  height: 91%;
+  width: 100%; }
 
 #wrap {
   min-height: 99%;
@@ -77,5 +78,3 @@ nav {
   height: 10px;
   position: relative;
   background-color: #00BCD4; }
-
-/*# sourceMappingURL=housestyle.css.map */

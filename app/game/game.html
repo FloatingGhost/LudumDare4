@@ -1,15 +1,17 @@
-<div class="jumbotron">
+<div ng-controller="game-Ctrl">
   <h2>Trump Inc</h2>
     <table class="table">
       <tr>
         <td>
-          GRAPH HERE
+          <div id="graph"></div> 
         </td>
         <td>
-          TRUMP HEAD
+          <img src="res/img/trump-head.png" alt="TRUMP HEAD">
         </td>
         <td>
-          MONEY HERE
+          Funds: ${{ money }}</br>
+          Button 1 stock: {{ button1stock }}</br>
+          Button 2 stock: {{ button2stock }}
         </td>
       </tr>
       <tr>
@@ -17,16 +19,37 @@
           Button upgrades here
         </td>
         <td>
-          TRUMP TORSO
+          <img src="res/img/trump-body.png" alt="TRUMP BODY">
         </td>
         <td>
-          BUY BUTTON
+          <button ng-click="buyButton1()" class="btn">Buy Button 1</button><br>
+          <button ng-click="buyButton2()" class="btn">Buy Button 2</button><br>
         </td>
       </tr>
       <tr>
         <td>More upgrades?</td>
-        <td>TRUMP LEGS</td>
+        <td><img src="res/img/trump-stump.png" alt="TRUMP STUMP"></td>
         <td>SELL BUTTON</td>
       </tr>
     </table>
+  <script type="text/javascript-lazy">
+      var dom_el = document.querySelector('[ng-controller="game-Ctrl"]');
+      var ng_el = angular.element(dom_el);
+      var scope = ng_el.scope();
+      //Set initial data
+      var seed = 50;
+      var priceArray = [scope.button1cost];
+      var priceArray2 = [scope.button2cost];
+      var karr = [];
+      for (i = 0; i < 10; i++) {
+        priceArray.push(priceArray[i] + 5*Math.random()*(Math.random()<0.5?-1:1));
+        priceArray2.push(priceArray2[i] + 5*Math.random()*(Math.random()<0.5?-1:1));
+        karr.push(i+1);
+      } 
+      console.log(priceArray);
+      var data = {x: karr, y: priceArray, name: "Button 1", type: 'scatter'};       
+      var data2 = {x: karr, y: priceArray2, name: "Button 2",  type: 'scatter'};
+      var layout = {title: "Button Market"};
+      Plotly.newPlot("graph", [data, data2], layout);
+  </script>
 </div>
