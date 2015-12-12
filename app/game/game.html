@@ -1,6 +1,6 @@
 <div ng-controller="game-Ctrl">
   <h2>Trump Inc</h2>
-    <timer countdown="10" interval="1000">Time unil next day: {{countdown}}</timer>
+    <timer countdown="10" interval="1000" finish-callback="update()">Time unil next day: {{countdown}}</timer>
     <table class="table">
       <tr>
         <td>
@@ -10,23 +10,38 @@
           <img src="res/img/trump-head.png" alt="TRUMP HEAD">
         </td>
         <td>
-          Funds: ${{ money }}</br>
+          <p class="{red: money > 0}">Funds: {{ money | currency }}</p></br>
+          Allocated Budget: {{getBudgetUsed()|currency}}</br>
           Button 1 stock: {{ button1stock }}</br>
-          Button 2 stock: {{ button2stock }}
+          Button 2 stock: {{ button2stock }}</br>
+          Supply : {{supply1}}, {{supply2}}</br>
+          Demand : {{demand1}}, {{demand2}}
         </td>
       </tr>
       <tr>
         <td>
-          Button upgrades here
+          <div>
+            <label for="quality">Production Quality: {{production.quality}}%</label>
+            <input type="range" min="1" max="100" name="quality" 
+                  ng-model="production.quality">
+            <label for="quantity1">Button 1 Production count: {{production.quantity1}} (max {{getMaxProd1()}})</label>
+            <input type="range" min="0" max={{getMaxProd1()}} ng-change="updateQuantity()" ng-model="production.quantity1">
+            
+            <label for="quantity1">Button 2 Production count: {{production.quantity2}} (max {{getMaxProd2()}})</label>
+          <input type="range" min="0" max={{getMaxProd2()}} ng-change="updateQuantity()" ng-model="production.quantity2">
+          </input>
+          </div>
         </td>
         <td>
           <img src="res/img/trump-body.png" alt="TRUMP BODY">
         </td>
         <td>
-          <button ng-click="buyButton1()" class="btn">Buy Button 1 (${{priceArray1[10]}})  </button><br>
-          <button ng-click="buyButton2()" class="btn">Buy Button 2 (${{priceArray2[10]}})  </button><br>
-        </td>
-      </tr>
+          <button ng-click="buyButton1()" class="btn">Buy Button 1 ({{priceArray1[dayMax]|currency}})</button><br>
+          <button ng-click="buyButton2()" class="btn">Buy Button 2 ({{priceArray2[dayMax]|currency}})</button><br>
+         <button ng-click="sellButton1()" class="btn">Sell Button 1 ({{priceArray1[dayMax]|currency}})</button><br>
+          <button ng-click="sellButton2()" class="btn">Sell Button 2 ({{priceArray2[dayMax]|currency}})</button><br>        
+      </td>
+     </tr>
       <tr>
         <td>More upgrades?</td>
         <td><img src="res/img/trump-stump.png" alt="TRUMP STUMP"></td>
@@ -42,7 +57,7 @@
       var priceArray = [scope.button1cost];
       var priceArray2 = [scope.button2cost];
       var karr = [];
-      for (i = 0; i < 10; i++) {
+      for (i = 0; i < scope.dayMax; i++) {
         priceArray.push(Math.round(100*(priceArray[i] + 5*Math.random()*(Math.random()<0.5?-1:1)))/100);
         priceArray2.push(Math.round(100*(priceArray2[i] + 5*Math.random()*(Math.random()<0.5?-1:1)))/100);
         karr.push(i+1);

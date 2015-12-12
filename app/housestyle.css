@@ -1,6 +1,9 @@
 table {
   width: 100%; }
 
+.red {
+  color: red; }
+
 .jumbotron {
   text-align: center;
   color: #212121;

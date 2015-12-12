@@ -6,6 +6,7 @@ var app = angular.module('LD34', [
   'LD34.home',
   'LD34.game',
   'timer',
+  'rzModule',
 ]);
 
 app.config(['$routeProvider', function($routeProvider) {
