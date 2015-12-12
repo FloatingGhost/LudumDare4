@@ -52,9 +52,22 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.priceArray1.push(newPrice1);
       $scope.priceArray2.push(newPrice2);
 
-      if (demand > supply) {
-        demand --;
+      if ($scope.demand1 > $scope.supply1) {
+        $scope.demand1 -= Math.floor(0.2*Math.exp(Math.E, ($scope.demand1 - $scope.supply1)));
       };
+      if ($scope.demand2 > $scope.supply2) {
+        $scope.demand2 -= Math.floor(0.2*Math.exp(Math.E, ($scope.demand2 - $scope.supply2)));
+      };
+      var karr = [];
+      for (i = 0; i < $scope.dayMax; i++) {
+        karr.push(i + 1);
+      } 
+      var data = {x: karr, y: $scope.priceArray1, name: "Button 1", type: 'scatter'};       
+        var data2 = {x: karr, y: $scope.priceArray2, name: "Button 2",  type: 'scatter'};
+        var layout = {title: "Button Market", yaxis: { title: "Price ($)" }, 
+                      xaxis: {title: "Days"}};
+      Plotly.newPlot("graph", [data, data2], layout);
+
     };
 
     $scope.updateQuantity = function () {
