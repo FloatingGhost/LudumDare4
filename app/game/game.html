@@ -78,7 +78,7 @@
       var data = {x: karr, y: priceArray, name: "Button 1", type: 'scatter'};       
       var data2 = {x: karr, y: priceArray2, name: "Button 2",  type: 'scatter'};
       var layout = {title: "Button Market", yaxis: { title: "Price ($)" }, 
-                    xaxis: {title: "Days"}};
+                    xaxis: {title: "Days"}, margin: {l: 40, b: 30, t: 30, r:30}};
       Plotly.newPlot("graph", [data, data2], layout);
   </script>
 </div>

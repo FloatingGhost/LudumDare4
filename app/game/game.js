@@ -47,17 +47,15 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.priceArray2 = $scope.priceArray2.splice(1, $scope.dayMax);
       
       var newPrice1 = ($scope.priceArray1[$scope.dayMax - 1]) + (Math.random()*5*($scope.supplyRatio1 > 1? 1:-1));
-      var newPrice2 = ($scope.priceArray2[$scope.dayMax - 1]) + (Math.random()*5*($scope.supplyRatio1 > 2? 1:-1)); 
-      
+      var newPrice2 = ($scope.priceArray2[$scope.dayMax - 1]) + (Math.random()*5*($scope.supplyRatio1 > 1? 1:-1)); 
+      if (newPrice1 <= 1) newPrice1 = 1;
+      if (newPrice2 <= 1) newPrice2 = 1;
       $scope.priceArray1.push(newPrice1);
       $scope.priceArray2.push(newPrice2);
 
-      if ($scope.demand1 > $scope.supply1) {
-        $scope.demand1 -= Math.floor(0.2*Math.exp(Math.E, ($scope.demand1 - $scope.supply1)));
-      };
-      if ($scope.demand2 > $scope.supply2) {
-        $scope.demand2 -= Math.floor(0.2*Math.exp(Math.E, ($scope.demand2 - $scope.supply2)));
-      };
+      //Number of buttons bought
+      
+      
       var karr = [];
       for (i = 0; i < $scope.dayMax; i++) {
         karr.push(i + 1);
@@ -65,7 +63,7 @@ angular.module('LD34.game', ['ngRoute'])
       var data = {x: karr, y: $scope.priceArray1, name: "Button 1", type: 'scatter'};       
         var data2 = {x: karr, y: $scope.priceArray2, name: "Button 2",  type: 'scatter'};
         var layout = {title: "Button Market", yaxis: { title: "Price ($)" }, 
-                      xaxis: {title: "Days"}};
+                      xaxis: {title: "Days"},margin: {l: 40, r: 30,  b: 30, t: 30}};
       Plotly.newPlot("graph", [data, data2], layout);
 
     };
@@ -102,6 +100,7 @@ angular.module('LD34.game', ['ngRoute'])
       if ($scope.money > $scope.priceArray1[$scope.dayMax]) {
         $scope.money -= $scope.priceArray1[$scope.dayMax];
         $scope.button1stock+=1;
+        $scope.supply1-=1;;
       }
       $scope.roundMoney();
     };
@@ -109,6 +108,7 @@ angular.module('LD34.game', ['ngRoute'])
       if ($scope.button1stock > 0) {
         $scope.money += $scope.priceArray1[$scope.dayMax];
         $scope.button1stock -= 1;
+        $scope.supply1+=1;
       }
       $scope.roundMoney();
     };
@@ -117,6 +117,7 @@ angular.module('LD34.game', ['ngRoute'])
       if ($scope.money > $scope.priceArray2[$scope.dayMax]) {
         $scope.money -= $scope.priceArray2[$scope.dayMax];
         $scope.button2stock+=1;
+        $scope.supply2-=1;
       }
       $scope.roundMoney();       
       $scope.updateQuantity();
@@ -125,6 +126,7 @@ angular.module('LD34.game', ['ngRoute'])
       if ($scope.button2stock > 0) {
         $scope.money += $scope.priceArray2[$scope.dayMax];
         $scope.button2stock -= 1;
+        $scope.supply2 += 1;
       }
       $scope.roundMoney();
       $scope.updateQuantity();
