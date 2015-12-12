@@ -1,0 +1,81 @@
+.jumbotron {
+  padding: 6% 6% 6% 6% !important;
+  text-align: center;
+  color: #212121; }
+  .jumbotron i {
+    color: #212121; }
+  .jumbotron button {
+    background-color: #009688;
+    color: #FFFFFF;
+    font-size: 300%;
+    padding: 2% 2% 2% 2%;
+    margin-top: 2%; }
+    .jumbotron button i {
+      color: #fff; }
+  .jumbotron button:hover {
+    color: #00BCD4; }
+  .jumbotron #game {
+    text-align: center;
+    padding: 3% 5% 3% 20%; }
+
+.bar {
+  text-align: center; }
+
+table em {
+  color: #B6B6B6;
+  font-size: 75%; }
+table th {
+  text-align: center; }
+
+strong {
+  color: #00BCD4; }
+
+.navbar {
+  background-color: #00796B !important;
+  color: #FFFFFF !important; }
+  .navbar a {
+    background-color: #00796B !important;
+    color: #FFFFFF !important; }
+  .navbar a:hover {
+    background-color: #00796B !important;
+    color: #FFFFFF !important; }
+
+.well table th {
+  text-align: left !important; }
+.well table td {
+  text-align: left !important; }
+.well table button {
+  font-size: 100%; }
+
+html, body {
+  height: 91%; }
+
+#wrap {
+  min-height: 99%;
+  width: 99%; }
+
+#main {
+  overflow: auto;
+  padding-bottom: 150px;
+  /* this needs to be bigger than footer height*/ }
+
+nav {
+  padding-top: -10px;
+  position: absolute;
+  top: -5px; }
+
+.footer {
+  position: relative;
+  margin-top: -20px;
+  /* negative value of footer height */
+  height: 20px;
+  clear: both;
+  padding-top: 20px;
+  width: 100%; }
+
+#seperator1 {
+  height: 10px;
+  position: relative;
+  background-color: #00BCD4; }
+
+/*# sourceMappingURL=housestyle.css.map */

@@ -1,0 +1,131 @@
+$fonts : "Roboto", "Inconsolata", "Droid Sans", sans-serif;
+
+
+$dark_prim: #00796B;
+$prim: #009688;
+$light_prim: #B2DFDB;
+$text: #FFFFFF;
+$accent: #00BCD4;
+$dark_text: #212121;
+$secondary_text: #727272;
+$divider: #B6B6B6;
+
+
+.jumbotron {
+    padding: 6% 6% 6% 6% !important;
+    text-align: center;
+    color: $dark_text;
+
+    i {
+      color: $dark-text;
+    }
+
+    button {
+      background-color: $prim;
+      color:  $text;
+      font-size: 300%;
+      padding: 2% 2% 2% 2%;
+      margin-top: 2%;
+
+      i {
+        color: #fff;
+      }
+
+    }
+
+    button:hover {
+      color: $accent;
+    }
+
+    #game {
+      text-align: center;
+      padding: 3% 5% 3% 20%;
+    }
+}
+
+.bar {
+  text-align: center;
+}
+
+table {
+  em {
+    color: $divider;
+    font-size: 75%;
+  }
+  th {
+    text-align: center;
+  }
+}
+
+
+strong {
+    color: $accent;
+}
+
+
+.navbar {
+   background-color: $dark_prim !important;
+   color: $text !important;
+
+   a {
+     background-color: $dark_prim !important;
+     color: $text !important;
+   }
+
+   a:hover {
+      background-color: $dark_prim !important;
+      color: $text !important;
+  }
+}
+
+
+.well {
+
+  table {
+    th {
+      text-align: left !important;
+    }
+    td {
+      text-align: left !important;
+    }
+
+    button {
+       font-size: 100%;
+    }
+  }
+}
+html, body {
+    height: 91%;
+}
+
+#wrap {
+    min-height: 99%;
+    width: 99%;
+}
+
+#main {
+    overflow:auto;
+    padding-bottom:150px; /* this needs to be bigger than footer height*/
+}
+
+nav{
+    padding-top: -10px;
+    position: absolute;
+    top: -5px;
+}
+
+.footer {
+    position: relative;
+    margin-top: -20px; /* negative value of footer height */
+    height: 20px;
+    clear:both;
+    padding-top:20px;
+    width: 100%;
+
+}
+
+#seperator1 {
+    height: 10px;
+    position: relative;
+    background-color: $accent;
+}
