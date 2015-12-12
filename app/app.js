@@ -4,6 +4,7 @@
 var app = angular.module('LD34', [
   'ngRoute',
   'LD34.home',
+  'LD34.game'
 ]);
 
 app.config(['$routeProvider', function($routeProvider) {
