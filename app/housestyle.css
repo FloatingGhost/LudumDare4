@@ -4,6 +4,14 @@ table {
 button {
   padding: 5px 5px 5px 5px; }
 
+.play {
+  padding: 0px 0px 0px 0px;
+  width: 300px;
+  height: 220px;
+  font-size: 300%; }
+  .play .green {
+    background-color: #00BCD4; }
+
 input[type=range] {
   width: 300px; }
 
@@ -33,11 +41,13 @@ input[type=range] {
 .bar {
   text-align: center; }
 
-table em {
-  color: #B6B6B6;
-  font-size: 75%; }
-table th {
-  text-align: center; }
+table {
+  width: 100%; }
+  table em {
+    color: #B6B6B6;
+    font-size: 75%; }
+  table th {
+    text-align: center; }
 
 strong {
   color: #00BCD4; }
@@ -52,20 +62,44 @@ strong {
     background-color: #00796B !important;
     color: #FFFFFF !important; }
 
-.well table th {
-  text-align: left !important; }
-.well table td {
-  text-align: left !important; }
-.well table button {
-  font-size: 100%; }
+img {
+  padding: 5px 5px 5px 5px; }
+
+.trump {
+  padding: 0px 30px 0px 30px; }
+
+.prod {
+  padding: 0px 30px 0px 0px; }
+
+.container {
+  padding-right: 0;
+  /*15px in bootstrap.css*/
+  padding-left: 0;
+  /*idem*/
+  margin-right: auto;
+  margin-left: auto; }
+
+.donald {
+  padding: 0px 0px 0px 30px; }
+
+.well {
+  padding: 10px 10px 10px 10px;
+  width: 100%; }
+  .well table th {
+    text-align: left !important; }
+  .well table td {
+    text-align: left !important; }
+  .well table button {
+    font-size: 100%; }
 
 html, body {
   height: 91%;
   width: 100%; }
 
 #wrap {
+  left: -100px;
   min-height: 99%;
-  width: 99%; }
+  width: 100%; }
 
 #main {
   overflow: auto;
@@ -74,7 +108,7 @@ html, body {
 
 nav {
   padding-top: -10px;
-  position: absolute;
+  position: relative;
   top: -5px; }
 
 .footer {

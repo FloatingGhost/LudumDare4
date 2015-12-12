@@ -10,6 +10,11 @@ angular.module('LD34.game', ['ngRoute'])
 }])
 
 .controller('game-Ctrl', ['$scope', "$interval", function($scope, $interval) {
+    
+    $scope.settings = {
+      speed: 4,
+      play: false
+    };
     $scope.money = 10000;  
     $scope.button1stock = 5;
     $scope.button2stock = 5;
@@ -25,6 +30,8 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.funding = {president: 0};
     $scope.allowPresidencyRun = false;
     $scope.presidencyRun = false;
+    $scope.wallBuilt = false;
+    $scope.internetClosed = false;
     $scope.president = {
       isPresident: false,
       heldRallys: 0,
@@ -32,6 +39,7 @@ angular.module('LD34.game', ['ngRoute'])
       required: 51,
       timeleft: 15
     };
+    
    
     $scope.production = {
       quality: 50,
@@ -42,6 +50,16 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.getProfit = function() {
       
     };
+
+    $scope.play = function() {
+      $scope.$broadcast('timer-start');
+      $scope.settings.play = true;
+    }
+
+    $scope.pause = function() {
+      $scope.$broadcast('timer-stop');
+      $scope.settings.play = false;
+    }
 
     $scope.getRallyCost = function() {
       return 500 * Math.pow(2, $scope.president.heldRallys); 
@@ -70,7 +88,7 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.update = function() {
       $scope.$broadcast("timer-stop");
       $scope.timerRunning = false;
-      $scope.$broadcast("timer-add-cd-seconds", $scope.dayLength);
+      $scope.$broadcast("timer-add-cd-seconds", $scope.settings.speed);
       //UPDATE SUPPLY AND DEMAND
       //If demand will fluctuate randomly
       //Supply can be directly influenced by the player
@@ -112,8 +130,8 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.competitorsMade2 = numberMade2;
       if ($scope.supply1 < 0) $scope.supply1 = 0;
       if ($scope.supply2 < 0) $scope.supply2 = 0;
-      $scope.demand1 += Math.floor(10*Math.random()*(Math.random()>(0.5)?$scope.demandMulti:-1))
-      $scope.demand2 += Math.floor(10*Math.random()*(Math.random()>(0.5)?$scope.demandMulti:-1));
+      $scope.demand1 += Math.floor(8*Math.random()*(Math.random()>(0.5)?$scope.demandMulti:-1))
+      $scope.demand2 += Math.floor(8*Math.random()*(Math.random()>(0.5)?$scope.demandMulti:-1));
       if ($scope.demand1 < 10) $scope.demand1 +=5;
       if ($scope.demand2 < 10) $scope.demand2 +=5;
       if ($scope.demand1 < 0) $scope.demand1 = 0;
@@ -187,16 +205,26 @@ angular.module('LD34.game', ['ngRoute'])
       if (confirm("Run for president?")) {
       $scope.presidencyRun = true;
       $scope.allowPresidencyRun = false;
-      $scope.funding.president = 50;
+      $scope.funding.president = 1000;
       $scope.president.timeleft = 5;
+      }
+    }
+
+    $scope.closeInternet = function() {
+      if (confirm("Close up the internet? This will cost $7500 and will bankrupt many online companies, increasing prices (and profits), but it will decrease demand due to bad publicity. Continue?")) {
+        $scope.money -= 7500;
+        $scope.internetClosed = true;
+        $scope.multiplier = 2;
+        $scope.demandMulti *= 0.75; 
       }
     } 
    
     $scope.buildTheWall = function() {
       if (confirm("Build a wall on the mexican border? This will cost $5000, but will increase demand due to the patriots buying american-made products. Manufacture price will increase though, due to lack of cheap mexican workers. Continue?")) {
+        $scope.money -= 5000;
         $scope.wallBuilt = true;
         $scope.manufactureMulti = 1.5;
-        $scope.demandMulti = 1.5;
+        $scope.demandMulti *= 1.5;
       }
     } 
 
@@ -208,11 +236,11 @@ angular.module('LD34.game', ['ngRoute'])
     };
 
     $scope.getPrice1 = function () {
-      return $scope.manufactureMulti * ($scope.production.quality/100) * $scope.priceArray1[$scope.dayMax];
+      return 0.3*$scope.manufactureMulti * ($scope.production.quality/100) * $scope.priceArray1[$scope.dayMax];
     }
 
     $scope.getPrice2 = function () {
-      return $scope.manufactureMulti*($scope.production.quality/100) * $scope.priceArray2[$scope.dayMax];
+      return 0.3*$scope.manufactureMulti*($scope.production.quality/100) * $scope.priceArray2[$scope.dayMax];
     };
 
     $scope.getMaxProd1 = function() {
