@@ -30,6 +30,10 @@
             <label for="quantity1">Button 2 Production count: {{production.quantity2}} (max {{getMaxProd2()}})</label>
           <input type="range" min="0" max={{getMaxProd2()}} ng-change="updateQuantity()" ng-model="production.quantity2">
           </input>
+          <label for="quantity1">Daily Button1 Shipping: {{retail.quantity1}} (max {{production.quantity1}})</label>
+          <input type="range" min="0" max={{button1stock}} ng-model ="retail.quantity1">
+          </input>
+
           </div>
         </td>
         <td>
