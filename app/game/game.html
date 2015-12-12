@@ -1,21 +1,26 @@
 <div ng-controller="game-Ctrl">
   <h2>Trump Inc</h2>
     <timer countdown="10" interval="1000" finish-callback="update()">Time unil next day: {{countdown}}</timer>
-    <table class="table">
+    <table> 
       <tr>
         <td>
           <div id="graph"></div> 
         </td>
         <td>
-          <img src="res/img/trump-head.png" alt="TRUMP HEAD">
+          <img ng-if="!presidencyRun" src="res/img/trump-head.png" alt="TRUMP HEAD">
+          <img ng-if="presidencyRun" src="res/img/trump-presidency.png" alt="TRUMP HEAD">
         </td>
         <td>
           <p class="{red: money > 0}">Funds: {{ money | currency }}</p></br>
           Allocated Budget: {{getBudgetUsed()|currency}}</br>
+          <div ng-if="profit >= 0">Profit: {{profit|currency}}</div>
+          <div ng-if="profit < 0">Loss: {{profit|currency}}</div>
           Button 1 stock: {{ button1stock }}</br>
           Button 2 stock: {{ button2stock }}</br>
           Supply : {{supply1}}, {{supply2}}</br>
-          Demand : {{demand1}}, {{demand2}}
+          Demand : {{demand1}}, {{demand2}}</br>
+          Average Quality: {{qualityAverage/100 | percentage:2}}<br><br><!--HUEHUEHUE-->
+          Competitors made: {{competitorsMade1}},{{competitorsMade2}}
         </td>
       </tr>
       <tr>
@@ -24,16 +29,22 @@
             <label for="quality">Production Quality: {{production.quality}}%</label>
             <input type="range" min="1" max="100" name="quality" 
                   ng-model="production.quality">
-            <label for="quantity1">Button 1 Production count: {{production.quantity1}} (max {{getMaxProd1()}})</label>
+            <label for="quantity1">Button 1 Production count: {{production.quantity1}} (max {{getMaxProd1()}} at {{getPrice1()|currency}})</label>
             <input type="range" min="0" max={{getMaxProd1()}} ng-change="updateQuantity()" ng-model="production.quantity1">
             
-            <label for="quantity1">Button 2 Production count: {{production.quantity2}} (max {{getMaxProd2()}})</label>
+            <label for="quantity1">Button 2 Production count: {{production.quantity2}} (max {{getMaxProd2()}} at {{getPrice2()|currency}})</label>
           <input type="range" min="0" max={{getMaxProd2()}} ng-change="updateQuantity()" ng-model="production.quantity2">
           </input>
           <label for="quantity1">Daily Button1 Shipping: {{retail.quantity1}} (max {{production.quantity1}})</label>
-          <input type="range" min="0" max={{button1stock}} ng-model ="retail.quantity1">
+          <input type="range" min="0" max={{production.quantity1}} ng-model ="retail.quantity1">
           </input>
-
+          <label for="quantity2">Daily Button2 Shipping: {{retail.quantity2}} (max {{production.quantity2}})</label>
+          <input type="range" min="0" max={{production.quantity2}} ng-model ="retail.quantity2">
+          </input>
+          <div ng-if="presidencyRun">
+          <label>Presidency Funding: {{funding.president|currency}}</label>
+          <input type="range" min="0" max={{money}} ng-model="funding.president"></input>
+          </div>
           </div>
         </td>
         <td>
@@ -47,7 +58,10 @@
       </td>
      </tr>
       <tr>
-        <td>More upgrades?</td>
+        <td>
+          <h3 ng-if="qualityAverage < 60">Increase average quality to 60% to run for president!</h3>
+        <button ng-if="!presidencyRun && allowPresidencyRun" ng-click="runForPresident()" class="btn">Run for president!</button>
+        </td>
         <td><img src="res/img/trump-stump.png" alt="TRUMP STUMP"></td>
         <td>SELL BUTTON</td>
       </tr>
