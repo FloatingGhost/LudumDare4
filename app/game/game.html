@@ -137,7 +137,7 @@
           <!-- Anything presidency related -->
           <h4> Days left: {{president.timeleft}}</h4>
           <p> Approval Rating: {{president.approval|number:0}} (need {{president.required|number:0}})</p>
-          <p> Approval Change per Day: {{funding.president / 10000 | percentage:2}}</p>
+          <p> Approval Change per Day: {{funding.president / 20000 | percentage:2}}</p>
             <label>Presidency Funding: {{funding.president|currency}}</label>
             <input type="range" class="slider" min="0" max={{money}} ng-model="funding.president"></input>
           <button class="btn" ng-click="holdRally()">Hold Rally! (+10 approval, cost: {{getRallyCost()|currency}})</button>
@@ -156,10 +156,10 @@
       </div>
       <div ng-if="president.isPresident">
         <div class="well">
-          <button ng-if="money >= 5000 &&!wallBuilt && qualityAverage > 75" class="btn" ng-click="buildTheWall()">
+          <button ng-if="money >= 5000 &&!wallBuilt && qualityAverage >= 75" class="btn" ng-click="buildTheWall()">
             Build the great mexican wall ($5000)
           </button>
-          <p ng-if="!wallBuilt && (money < 5000 || qualityAverage <= 75)">Build the Mexican Wall: <br>[Required: Ave.Quality 75, Money 5,000]</p>
+          <p ng-if="!wallBuilt && (money < 5000 || qualityAverage < 75)">Build the Mexican Wall: <br>[Required: Ave.Quality 75, Money 5,000]</p>
           <button class="btn" ng-if="!internetClosed && money > 7500 && qualityAverage > 70" ng-click="closeInternet()">
             Close up the internet ($7500)
           </button> 

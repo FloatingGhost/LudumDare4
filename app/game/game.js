@@ -105,6 +105,7 @@ angular.module('LD34.game', ['ngRoute'])
 
 
     $scope.update = function() {
+     
       $scope.$broadcast("timer-stop");
       $scope.timerRunning = false;
       $scope.$broadcast("timer-add-cd-seconds", $scope.settings.speed);
@@ -192,6 +193,9 @@ angular.module('LD34.game', ['ngRoute'])
         $scope.retail.quantity2 = 0;
         $scope.presidencyRun = false;
         $scope.funding.president = 0;
+        if ($scope.button1stock == 0 && $scope.button2stock == 0) {
+          location.hash = "#/lose";
+        }
         alert("You are broke! Sell off your stored buttons and attempt not to go bankrupt.");
       };
       
@@ -214,7 +218,7 @@ angular.module('LD34.game', ['ngRoute'])
             alert("You have recieved a donation of $" + amount +" to help you become president");
             $scope.money += amount;
           };
-          $scope.president.approval += $scope.funding.president / 100;
+          $scope.president.approval += $scope.funding.president / 200;
         } else {
           $scope.presidencyRun = false;
           if ($scope.president.approval > $scope.president.required) {
@@ -249,6 +253,7 @@ angular.module('LD34.game', ['ngRoute'])
         $scope.money -= 7500;
         $scope.internetClosed = true;
         $scope.multiplier *= 2;
+        $scope.manufactureMulti *=0.75;
         $scope.demandMulti *= 0.75; 
       }
     } 
@@ -257,7 +262,7 @@ angular.module('LD34.game', ['ngRoute'])
       if (confirm("Build a wall on the mexican border? This will cost $5000, but will increase demand due to the patriots buying american-made products. Manufacture price will increase though, due to lack of cheap mexican workers. Continue?")) {
         $scope.money -= 5000;
         $scope.wallBuilt = true;
-        $scope.manufactureMulti *= 1.5;
+        $scope.manufactureMulti *= 1.25;
         $scope.demandMulti *= 1.5;
       }
     } 
