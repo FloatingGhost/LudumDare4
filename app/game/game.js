@@ -15,6 +15,7 @@ angular.module('LD34.game', ['ngRoute'])
       speed: 4,
       play: false
     };
+    $scope.mcdonald = false;
     $scope.money = 1000;  
     $scope.button1stock = 25;
     $scope.button2stock = 25;
@@ -32,6 +33,7 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.presidencyRun = false;
     $scope.wallBuilt = false;
     $scope.internetClosed = false;
+    $scope.banned = false;
     $scope.president = {
       isPresident: false,
       heldRallys: 0,
@@ -40,6 +42,24 @@ angular.module('LD34.game', ['ngRoute'])
       timeleft: 15
     };
     
+    $scope.demandMulti = 1;
+    $scope.manufactureMulti = 1;
+    
+    $scope.foundmcdonald = function() {
+      if (confirm("Found McDonald Trump? This will cost $10,000, but will increase demand due to massive advertising!")) {
+      $scope.mcdonald = true;
+      $scope.money -= 10000;
+      $scope.demandMulti *= 1.5;
+      }
+      
+    } 
+
+    $scope.abolishCapitalism = function() {
+      if (confirm("Abolish Capitalism? This will force your competitors to close, giving you full control over the button markets.\nPress the button comrade.")) {
+        location.hash = "/win";
+      }
+  
+    }
    
     $scope.production = {
       quality: 75,
@@ -83,8 +103,6 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.qualitySum = 0;
     $scope.qualityAverage = 0;
 
-    $scope.demandMulti = 1;
-    $scope.manufactureMulti = 1;
 
     $scope.update = function() {
       $scope.$broadcast("timer-stop");
@@ -191,30 +209,38 @@ angular.module('LD34.game', ['ngRoute'])
       if ($scope.presidencyRun) {
         if ($scope.president.timeleft > 0) {
           $scope.president.timeleft-=1;
-          if (Math.random() > 0.9) {
-            var amount = Math.floor(1500 * Math.random());
+          if (Math.random() > 0.85) {
+            var amount = Math.floor(3000 * Math.random());
             alert("You have recieved a donation of $" + amount +" to help you become president");
             $scope.money += amount;
           };
-          $scope.president.approval += $scope.funding.president / 500;
+          $scope.president.approval += $scope.funding.president / 100;
         } else {
           $scope.presidencyRun = false;
           if ($scope.president.approval > $scope.president.required) {
             //YAYYY WINNER!
             $scope.president.isPresident = true;
             alert("We will now inaugerate Mr Trump as God-King of the americas"); 
+          } else {
+            alert("You lost the presidential race! I'm sorry mr trump, try again next time.");
           }
         }
       }
 
     };
+
+    $scope.ban = function() {
+      alert("You are Banned from the UK on the grounds of 'Hate Speech'. Demand goes up because the developer of this game says it does.\nDon't question the trump.");
+      $scope.demandMulti *= 1.1; 
+      $scope.banned = true;
+    }
     
     $scope.runForPresident = function() {
-      if (confirm("Run for president? Make sure you have enough money, the presidential race is expensive! (I recommend at least 20k)")) {
+      if (confirm("Run for president? Make sure you have enough money, the presidential race is expensive! (I recommend at least 5k)")) {
       $scope.presidencyRun = true;
       $scope.allowPresidencyRun = false;
-      $scope.funding.president = 1000;
-      $scope.president.timeleft = 5;
+      $scope.funding.president = 0;
+      $scope.president.timeleft = 30;
       }
     }
 
@@ -222,7 +248,7 @@ angular.module('LD34.game', ['ngRoute'])
       if (confirm("Close up the internet? This will cost $7500 and will bankrupt many online companies, increasing prices (and profits), but it will decrease demand due to bad publicity. Continue?")) {
         $scope.money -= 7500;
         $scope.internetClosed = true;
-        $scope.multiplier = 2;
+        $scope.multiplier *= 2;
         $scope.demandMulti *= 0.75; 
       }
     } 
@@ -231,7 +257,7 @@ angular.module('LD34.game', ['ngRoute'])
       if (confirm("Build a wall on the mexican border? This will cost $5000, but will increase demand due to the patriots buying american-made products. Manufacture price will increase though, due to lack of cheap mexican workers. Continue?")) {
         $scope.money -= 5000;
         $scope.wallBuilt = true;
-        $scope.manufactureMulti = 1.5;
+        $scope.manufactureMulti *= 1.5;
         $scope.demandMulti *= 1.5;
       }
     } 
@@ -244,13 +270,13 @@ angular.module('LD34.game', ['ngRoute'])
     };
 
     $scope.getPrice1 = function () {
-      var x =  $scope.manufactureMulti * ($scope.production.quality/100) * $scope.priceArray1[$scope.dayMax];
+      var x =  1.1*$scope.manufactureMulti * ($scope.production.quality/100) * $scope.priceArray1[$scope.dayMax];
       if (x < 15) x = 15;
       return x;
     }
 
     $scope.getPrice2 = function () {
-      var x =  $scope.manufactureMulti*($scope.production.quality/100) * $scope.priceArray2[$scope.dayMax];
+      var x =  1.1*$scope.manufactureMulti*($scope.production.quality/100) * $scope.priceArray2[$scope.dayMax];
       if (x < 15) x = 15;
       return x;
 

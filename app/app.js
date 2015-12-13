@@ -8,6 +8,7 @@ var app = angular.module('LD34', [
   'timer',
   'rzModule',
   'LD34.helpmenu',
+  'LD34.win',
 ]);
 
 app.config(['$routeProvider', function($routeProvider) {

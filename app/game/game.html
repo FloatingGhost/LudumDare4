@@ -129,14 +129,15 @@
     <div class="col-md-3">
       <h4>Donald Controls</h4>
       <div class="well">
-        <p ng-if="qualityAverage < 60">Increase average quality<br> to 60% to run for president!</p>
+        <button ng-if="!banned" ng-click="ban()">Hold a speech</button>
+        <p ng-if="qualityAverage < 60">Predidential Run : <br>[Required: Ave.Quality 60]</p>
         <button ng-if="!president.isPresident && !presidencyRun && allowPresidencyRun" ng-click="runForPresident()" class="btn">Run for president!</button>
 
         <div ng-if="presidencyRun">
           <!-- Anything presidency related -->
           <h4> Days left: {{president.timeleft}}</h4>
-          <p> Approval Rating: {{president.approval}} (need {{president.required}})</p>
-          <p> Approval Change per month: {{funding.president / 50000 | percentage:2}}</p>
+          <p> Approval Rating: {{president.approval|number:0}} (need {{president.required|number:0}})</p>
+          <p> Approval Change per Day: {{funding.president / 10000 | percentage:2}}</p>
             <label>Presidency Funding: {{funding.president|currency}}</label>
             <input type="range" class="slider" min="0" max={{money}} ng-model="funding.president"></input>
           <button class="btn" ng-click="holdRally()">Hold Rally! (+10 approval, cost: {{getRallyCost()|currency}})</button>
@@ -144,6 +145,8 @@
 
         <div ng-if="!presidencyRun">
           <!-- Anything non-president related-->
+          <p ng-if="!mcdonald && qualityAverage < 80 && money < 10000">Found McDonald Trumps:<br>[Required: Ave.Quality: 80, Money: 10,000]</p>
+          <button class="btn" ng-click="foundmcdonald()" ng-if="!mcdonald && qualityAverage >= 80 && money >= 10000">Found McDonald Trumps ($10000)</button> 
         </div>
       </div>
 
@@ -156,12 +159,14 @@
           <button ng-if="money >= 5000 &&!wallBuilt && qualityAverage > 75" class="btn" ng-click="buildTheWall()">
             Build the great mexican wall ($5000)
           </button>
-          <p ng-if="!wallBuilt && (money < 5000 || qualityAverage <= 75)">[Required: $5000 and 75% average quality]</p>
+          <p ng-if="!wallBuilt && (money < 5000 || qualityAverage <= 75)">Build the Mexican Wall: <br>[Required: Ave.Quality 75, Money 5,000]</p>
           <button class="btn" ng-if="!internetClosed && money > 7500 && qualityAverage > 70" ng-click="closeInternet()">
             Close up the internet ($7500)
           </button> 
-          <p ng-if="!internetClosed && (money <= 7500 || qualityAverage <= 70)">[Required: $7500 and 70% average quality]</p>
-        </div>
+          <p ng-if="!internetClosed && (money <= 7500 || qualityAverage <= 70)">Close up the internet: <br>[Required: Ave.Quality 70, Money 7,500]</p>
+          <p ng-if="!internetClosed || !wallBuilt || !banned">Abolish Capitalism: <br>[Required: Complete all above actions]</p>
+          <button ng-if="internetClosed && wallBuilt && banned" ng-click="abolishCapitalism()">Abolish Capitalism</button> 
+      </div>
       </div>
     </div>
 
