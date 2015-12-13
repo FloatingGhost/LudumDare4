@@ -142,8 +142,8 @@ angular.module('LD34.game', ['ngRoute'])
       var numberBought2 = Math.floor(20*Math.random()); 
       $scope.supply1 -= numberBought1;
       $scope.supply2 -= numberBought2; 
-      var numberMade1 = 1+Math.floor(10*Math.random())*($scope.demand1-$scope.supply1>10?2:1); 
-      var numberMade2 = 1+Math.floor(10*Math.random())*($scope.demand2-$scope.supply2>10?2:1);
+      var numberMade1 = 1+Math.floor(($scope.demand1 - $scope.supply1)*Math.random())*($scope.demand1-$scope.supply1>10?2:1); 
+      var numberMade2 = 1+Math.floor(($scope.demand2 - $scope.supply2)*Math.random())*($scope.demand2-$scope.supply2>10?2:1);
       if ($scope.supply1 > $scope.demand1) {
         numberMade1 = 0;
       }
@@ -158,12 +158,32 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.competitorsMade2 = numberMade2;
       if ($scope.supply1 < 3) $scope.supply1 = 3;
       if ($scope.supply2 < 3) $scope.supply2 = 3;
-      $scope.demand1 += Math.floor((new1 < 20?2:1) * (new1 > 100?0.5:1)*(24*Math.random()*$scope.demandMulti));
-      $scope.demand2 += Math.floor((new1 < 20?2:1) * (new2 > 100?0.5:1)*(21*Math.random()*$scope.demandMulti));
+
+      if (Math.abs($scope.demand1 - $scope.supply1) < 100) {
+        $scope.demand1 += Math.floor((new1 < 20?2:1) * (new1 > 100?0.5:1)*(24*Math.random()*$scope.demandMulti));
+      } else {
+        if ($scope.demand1 > $scope.supply1) {
+          $scope.demand1 += (2*Math.random()*$scope.demandMulti);  
+        } else {
+          $scope.demand1 -= Math.floor((new1 < 20?2:1) * (new1 > 100?0.5:1)*(24*Math.random()*$scope.demandMulti));
+        }
+      }
+
+      if (Math.abs($scope.demand2 - $scope.supply2) < 100) {
+        $scope.demand2 += Math.floor((new2 < 20?2:1) * (new2 > 100?0.5:1)*(24*Math.random()*$scope.demandMulti));  
+      } else {  
+          if ($scope.demand2 > $scope.supply2) {
+            $scope.demand2 += (2*Math.random()*$scope.demandMulti); 
+          } else {  
+            $scope.demand2 -= Math.floor((new2 < 20?2:1) * (new2 > 100?0.5:1)*(24*Math.random()*$scope.demandMulti));
+          }        
+        }
       if ($scope.demand1 < 10) $scope.demand1 +=5;
       if ($scope.demand2 < 10) $scope.demand2 +=5;
       if ($scope.demand1 < 0) $scope.demand1 = 0;
       if ($scope.demand2 < 0) $scope.demand2 = 0;
+      if ($scope.demand1 <=0) $scope.demand1 = Math.floor($scope.supply1/2);
+      if ($scope.demand2 <=0) $scope.demand2 = Math.floor($scope.supply2/2);
       var karr = [];
       for (i = 0; i < $scope.dayMax; i++) {
         karr.push(i + 1);
