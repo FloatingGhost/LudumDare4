@@ -1,8 +1,8 @@
 <div class="container-fluid"  ng-controller="game-Ctrl">
-  <h2 ng-if="!president.isPresident">Trump Inc</h2>
-  <h2 ng-if="president.isPresident">Royal Trump Incorporated</h2>
+  <h2 style="text-align:center"  ng-if="!president.isPresident">Trump Inc</h2>
+  <h2  style="text-align:center" ng-if="president.isPresident">Royal Trump Incorporated</h2>
 
-  <timer autostart="false" countdown="10" interval="1000" finish-callback="update()">Time until next day: {{countdown}}</timer>
+  <timer autostart="false" countdown="4" interval="1000" finish-callback="update()">Time until next day: {{countdown}}</timer>
   <label>Game Speed: {{settings.speed}}s per day</label><input type="range" min="1" max="10" ng-model="settings.speed"></input>
   <!--START INFO ROW-->
   <div class="row no-gutters">
@@ -15,26 +15,75 @@
     <div class="col-md-3">
       <h4>Economy Information </h4>
       <div class="well">
-        Supply : {{supply1}}, {{supply2}}</br>
-        Demand : {{demand1}}, {{demand2}}</br>
-        Average Quality: {{qualityAverage/100 | percentage:2}}<br><br><!--HUEHUEHUE-->
-        Competitors made: {{competitorsMade1}},{{competitorsMade2}}
+        <table class="table table-striped">
+          <tr>
+            <th></th>
+            <th><img src="res/img/button-1.png" alt="b"> Button 1</th>
+            <th><img src="res/img/button-2.png" alt="b"> Button 2</th>
+          </tr>
+          <tr>
+            <td>Supply</td>
+            <td>{{supply1}}</td>
+            <td>{{supply2}}</td>
+          </tr>
+          <tr>
+            <td>Demand</td>
+            <td>{{demand1}}</td>
+            <td>{{demand2}}</td>
+          </tr>
+          <tr>
+            <td>Diff</td>
+            <td><p ng-if="supply1 > demand1" class="red">{{demand1 - supply1}}</p>
+                <p ng-if="supply1 <= demand1" class="green">{{demand1 - supply1}}</p>
+            </td>
+            <td><p ng-if="supply2 > demand2" class="red">{{demand2 - supply2}}</p>
+                <p ng-if="supply2 <= demand2" class="green">{{demand2 - supply2}}</p>
+            </td>  
+        </table>
+      </div>
+      <h4>Income</h4>
+      <div class="well">    
+      <table class="table table-striped">
+          <tr>
+            <th></th>
+            <th><img src="res/img/button-1.png" alt="b"> Button 1</th>
+            <th><img src="res/img/button-2.png" alt="b"> Button 2</th>
+          </tr>
+          <tr>
+            <td>Production:</td>
+            <td class="red">{{getPrice1()*production.quantity1|currency}}</td>
+            <td class="red">{{getPrice2()*production.quantity2|currency}}</td>
+          </tr>
+          <tr>
+            <td>Sales:</td>
+            <td class="green">{{priceArray1[dayMax]*retail.quantity1|currency}}</td>
+            <td class="green">{{priceArray2[dayMax]*retail.quantity2|currency}}</td>
+          </tr>
+          <tr>
+            <td>Diff</td>
+            <td><p ng-if="priceArray1[dayMax]*retail.quantity1 - getPrice1()*production.quantity1 < 0" class="red">{{priceArray1[dayMax]*retail.quantity1 - getPrice1()*production.quantity1|currency}}</p>
+                <p ng-if="priceArray1[dayMax]*retail.quantity1 - getPrice1()*production.quantity1 >= 0" class="green">{{priceArray1[dayMax]*retail.quantity1 - getPrice1()*production.quantity1|currency}}</p>
+            </td>
+            <td><p ng-if="priceArray2[dayMax]*retail.quantity2 - getPrice2()*production.quantity2 < 0" class="red">{{priceArray2[dayMax]*retail.quantity2 - getPrice2()*production.quantity2|currency}}</p>
+                <p ng-if="priceArray2[dayMax]*retail.quantity2 - getPrice2()*production.quantity2 >= 0" class="green">{{priceArray2[dayMax]*retail.quantity2 - getPrice2()*production.quantity2|currency}}</p>
+            </td>
+        </table>  <!--HUEHUEHUE-->
       </div>
     </div>
 
     <div class="col-md-3">
       <h4>Market History</h4>
-      <div class="well" id="graph"></div> 
+      <div class="well" id="graph"><p><img src="res/img/button-1.png" alt="b"> Button 1 Sells for {{priceArray1[dayMax]|currency}}</p>
+      <p><img src="res/img/button-2.png" alt="b"> Button 2 Sells for {{priceArray2[dayMax]|currency}}</p></div> 
     </div>
     <div class="col-md-3">
       <h4>Finances</h4>
       <div class="well">
-        <h5>Funds: {{ money | currency }}</h5></br>
-        Allocated Budget: {{getBudgetUsed()|currency}}</br>
-        <div ng-if="profit >= 0" class="green">Profit: {{profit|currency}}</div>
-        <div ng-if="profit < 0" class="red">Loss: {{profit|currency}}</div>
-        <img src="res/img/button-1.png" alt="b"> Button 1 stock: {{ button1stock }}</br>
-        <img src="res/img/button-2.png" alt="b"> Button 2 stock: {{ button2stock }}</br>
+        <h3>Funds: {{ money | currency }}</h3></br>
+        
+        <h3>Average Quality: {{qualityAverage/100 | percentage:2}}</h3><br><br>
+        <div ng-if="profit >= 0" class="green"><h4>Profit: {{profit|currency}}</h4></div>
+        <div ng-if="profit < 0" class="red"><h4>Loss: {{profit|currency}}</h4></div>
       </div>
     </div>
   </div>
@@ -68,9 +117,13 @@
     <div class="col-md-3">
       <h4>Surplus controls</h4>
       <div class="well">
-        <button ng-click="buyButton1()" class="btn">Buy <img src="res/img/button-1.png" alt="b"> Button 1 ({{priceArray1[dayMax]|currency}})</button><br>
-        <br><button ng-click="buyButton2()" class="btn">Buy <img src="res/img/button-2.png" alt="b"> Button 2 ({{priceArray2[dayMax]|currency}})</button><br>
+       
+        <img src="res/img/button-1.png" alt="b"> Button 1 stock: {{ button1stock }}</br>
+        <img src="res/img/button-2.png" alt="b"> Button 2 stock: {{ button2stock }}</br>
+       <button ng-click="buyButton1()" class="btn">Buy <img src="res/img/button-1.png" alt="b"> Button 1 ({{priceArray1[dayMax]|currency}})</button><br>
         <br><button ng-click="sellButton1()" class="btn">Sell <img src="res/img/button-1.png" alt="b"> Button 1 ({{priceArray1[dayMax]*multiplier|currency}})</button><br>
+        
+        <br><button ng-click="buyButton2()" class="btn">Buy <img src="res/img/button-2.png" alt="b"> Button 2 ({{priceArray2[dayMax]|currency}})</button><br>
         <br><button ng-click="sellButton2()" class="btn">Sell <img src="res/img/button-2.png" alt="b"> Button 2 ({{priceArray2[dayMax]*multiplier|currency}})</button><br>        
       </div>
     </div>
