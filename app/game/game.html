@@ -75,6 +75,7 @@
       <h4>Market History</h4>
       <div class="well" id="graph"><p><img src="res/img/button-1.png" alt="b"> Button 1 Sells for {{priceArray1[dayMax]|currency}}</p>
       <p><img src="res/img/button-2.png" alt="b"> Button 2 Sells for {{priceArray2[dayMax]|currency}}</p></div> 
+    <div class="well"><h3>{{msg}}</h3></div>
     </div>
     <div class="col-md-3">
       <h4>Finances</h4>
@@ -107,8 +108,6 @@
           <label for="quantity2">Daily <img src="res/img/button-2.png" alt="b"> Button2 Shipping: {{retail.quantity2}} (max {{production.quantity2}})</label>
           <input type="range" class="slider" min="0" max={{production.quantity2}} ng-model ="retail.quantity2"></input>
           <div ng-if="presidencyRun">
-            <label>Presidency Funding: {{funding.president|currency}}</label>
-            <input type="range" class="slider" min="0" max={{money}} ng-model="funding.president"></input>
           </div>
         </div>
       </div>
@@ -138,6 +137,8 @@
           <h4> Days left: {{president.timeleft}}</h4>
           <p> Approval Rating: {{president.approval}} (need {{president.required}})</p>
           <p> Approval Change per month: {{funding.president / 50000 | percentage:2}}</p>
+            <label>Presidency Funding: {{funding.president|currency}}</label>
+            <input type="range" class="slider" min="0" max={{money}} ng-model="funding.president"></input>
           <button class="btn" ng-click="holdRally()">Hold Rally! (+10 approval, cost: {{getRallyCost()|currency}})</button>
         </div>
 

@@ -60,11 +60,12 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.$broadcast('timer-stop');
       $scope.settings.play = false;
     }
-
+    $scope.msg = "BUY BUY BUY";
+    $interval(function(){$scope.msg =  Math.random()>0.9?"HAIL TRUMP":Math.random()>0.5?"BUY BUY BUY":"SELL SELL SELL"}, 500);
     $scope.getRallyCost = function() {
       return 500 * Math.pow(2, $scope.president.heldRallys); 
     };
-
+    
     $scope.holdRally = function() {
       $scope.money -= $scope.getRallyCost();
       $scope.president.approval += 10;
