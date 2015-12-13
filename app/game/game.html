@@ -119,11 +119,14 @@
        
         <img src="res/img/button-1.png" alt="b"> Button 1 stock: {{ button1stock }}</br>
         <img src="res/img/button-2.png" alt="b"> Button 2 stock: {{ button2stock }}</br>
-       <button ng-click="buyButton1()" class="btn">Buy <img src="res/img/button-1.png" alt="b"> Button 1 ({{priceArray1[dayMax]|currency}})</button><br>
-        <br><button ng-click="sellButton1()" class="btn">Sell <img src="res/img/button-1.png" alt="b"> Button 1 ({{priceArray1[dayMax]*multiplier|currency}})</button><br>
-        
-        <br><button ng-click="buyButton2()" class="btn">Buy <img src="res/img/button-2.png" alt="b"> Button 2 ({{priceArray2[dayMax]|currency}})</button><br>
-        <br><button ng-click="sellButton2()" class="btn">Sell <img src="res/img/button-2.png" alt="b"> Button 2 ({{priceArray2[dayMax]*multiplier|currency}})</button><br>        
+       <button ng-click="buyButton1()" class="btn">Buy {{button1buy}}<img src="res/img/button-1.png" alt="b"> Button 1 @ {{priceArray1[dayMax]|currency}}</button><br>
+        <input type="range" ng-model="button1buy" min="1" value="1" max={{getMaxSell1()}}></input>
+        <br><button ng-click="sellButton1()" class="btn">Sell {{button1sell}}<img src="res/img/button-1.png" alt="b"> Button 1 @ {{priceArray1[dayMax]*multiplier|currency}}</button><br>
+        <input type="range" ng-model="button1sell" min="1" value="1" max={{button1stock}}></input> 
+        <br><button ng-click="buyButton2()" class="btn">Buy {{button2buy}}<img src="res/img/button-2.png" alt="b"> Button 2 @ {{priceArray2[dayMax]|currency}}</button><br>
+      <input type="range" ng-model="button2buy" min="1" value="1" max={{getMaxSell2()}}></input>  
+      <br><button ng-click="sellButton2()" class="btn">Sell {{button2sell}}<img src="res/img/button-2.png" alt="b"> Button 2 @ {{priceArray2[dayMax]*multiplier|currency}}</button><br>        
+     <input type="range" ng-model="button2sell" min="1" value="1" max={{button2stock}}></input>   
       </div>
     </div>
     <div class="col-md-3">

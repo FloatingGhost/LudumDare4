@@ -323,7 +323,18 @@ angular.module('LD34.game', ['ngRoute'])
     $scope.getBudgetUsed = function() {
       return parseInt($scope.funding.president) + ($scope.getPrice1() * $scope.production.quantity1) + ($scope.getPrice2() * $scope.production.quantity2);
     };
-   
+    $scope.button1sell = 1;
+    $scope.button1buy = 1;
+    $scope.button2sell = 1;
+    $scope.button2buy = 1;
+
+    $scope.getMaxSell1 = function() {
+      return Math.floor($scope.money / $scope.priceArray1[$scope.dayMax]);
+    }
+
+    $scope.getMaxSell2 = function() {
+      return Math.floor($scope.money / $scope.priceArray2[$scope.dayMax]);
+    } 
     $scope.buyButton1 = function() {
       if ($scope.supply1 > 0 && $scope.money > $scope.priceArray1[$scope.dayMax]) {
         $scope.money -= $scope.priceArray1[$scope.dayMax];
@@ -333,10 +344,10 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.roundMoney();
     };
     $scope.sellButton1 = function() {
-      if ($scope.button1stock > 0) {
-        $scope.money += $scope.multiplier * $scope.priceArray1[$scope.dayMax];
-        $scope.button1stock -= 1;
-        $scope.supply1+=1;
+      if ($scope.button1stock > $scope.button1sell) {
+        $scope.money += $scope.button1sell * $scope.multiplier * $scope.priceArray1[$scope.dayMax];
+        $scope.button1stock -= $scope.button1sell;
+        $scope.supply1+=$scope.button1sell;
       }
       $scope.roundMoney();
     };
