@@ -46,7 +46,7 @@
           <label for="quality">Production Quality: {{production.quality}}%</label>
           <input type="range" class="slider" min="1" max="100" name="quality" 
                                                                ng-model="production.quality">
-          <label for="quantity1"><img src="res/img/button-1.png" alt="b"> Button 1 Production count: {{production.quantity1}} (max {{getMaxProd1()}})</label>
+          <label for="quantity1"><img src="res/img/button-1.png" alt="b"> Button 1 Production count: {{production.quantity1}} (max {{getMaxProd1()}}) (Prod {{getPrice1()|currency}}, Mrkt {{priceArray1[dayMax]|currency}})</label>
           <input type="range" class="slider" min="0" max={{getMaxProd1()}} ng-change="updateQuantity()" ng-model="production.quantity1">
 
           <label for="quantity1"><img src="res/img/button-2.png" alt="b"> Button 2 Production count: {{production.quantity2}} (max {{getMaxProd2()}})</label>

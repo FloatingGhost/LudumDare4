@@ -92,46 +92,61 @@ angular.module('LD34.game', ['ngRoute'])
       //UPDATE SUPPLY AND DEMAND
       //If demand will fluctuate randomly
       //Supply can be directly influenced by the player
-      console.log($scope.funding.president);
       //Update Prices
-      var supplyRatio1 = $scope.supply1 / $scope.demand1;
-      var supplyRatio2 = $scope.supply2 / $scope.demand2;
-
+      var supplyRatio1 = $scope.supply1 - $scope.demand1;
+      var supplyRatio2 = $scope.supply2 - $scope.demand2;
+      $scope.outstrip1 = ($scope.demand1 > $scope.supply1);
+      $scope.outstrip2 = ($scope.demand2 > $scope.supply2);
       //If high, decrease price
       //If low, increase price
       //Chop off index 1
       $scope.priceArray1 = $scope.priceArray1.splice(1, $scope.dayMax);
       $scope.priceArray2 = $scope.priceArray2.splice(1, $scope.dayMax);
       
-      var newPrice1 = ($scope.priceArray1[$scope.dayMax - 1]) + (Math.random()*7*(supplyRatio1 > 1? -1:1));
-      var newPrice2 = ($scope.priceArray2[$scope.dayMax - 1]) + (Math.random()*7*(supplyRatio2> 1? -1:1)); 
-      if (newPrice1 <= 1) newPrice1 = 1;
-      if (newPrice2 <= 1) newPrice2 = 1;
-      $scope.priceArray1.push(newPrice1);
-      $scope.priceArray2.push(newPrice2);
-
+      var change1 = Math.exp(0.2*Math.abs($scope.supply1 - $scope.demand1))*($scope.outstrip1? 1:-1);
+      var change2 = Math.exp(0.2*Math.abs($scope.supply2 - $scope.demand2))*($scope.outstrip2? 1:-1); 
+      if ($scope.priceArray1[$scope.dayMax-1] - change1 < 0) {
+        change1 = -$scope.priceArray1[$scope.dayMax-1]-1;
+      } 
+      if ($scope.priceArray2[$scope.dayMax-1] - change2 < 0) {
+        change2 = -$scope.priceArray1[$scope.dayMax-1]-1;
+      }
+      if (change1 > 20) change1 = 20;
+      if (change1 < -20) change1 = -20;
+      if (change2 > 20) change2 = 20;
+      if (change2 < -20) change2 = -20;
+      
+      var new1 = $scope.priceArray1[$scope.dayMax-1] + change1;
+      var new2 = $scope.priceArray2[$scope.dayMax-1] + change2;
+      if (new1 < 1) new1 = 1;
+      if (new2 < 1) new2 = 1;
+      console.log("CHANGE1 " + change1 +", CHANGE 2 " + change2); 
+      $scope.priceArray1.push(new1);
+      $scope.priceArray2.push(new2);
       //Number of buttons bought
-      var numberBought1 = 1+Math.floor(0.2*Math.pow(Math.E, ($scope.supply1 - $scope.demand1)*Math.random()));
-      var numberBought2 = 1+Math.floor(0.2*Math.pow(Math.E, ($scope.supply2 - $scope.demand2)*Math.random())); 
+      var numberBought1 = Math.floor(20*Math.random());
+      var numberBought2 = Math.floor(20*Math.random()); 
       $scope.supply1 -= numberBought1;
       $scope.supply2 -= numberBought2; 
       
-      var numberMade1 = 1+Math.floor(15*Math.random())*($scope.demand1-$scope.supply1>20?2:1); 
-      var numberMade2 = 1+Math.floor(15*Math.random())*($scope.demand2-$scope.supply2>20?2:1);
+      var numberMade1 = 1+Math.floor(10*Math.random())*($scope.demand1-$scope.supply1>10?2:1); 
+      var numberMade2 = 1+Math.floor(10*Math.random())*($scope.demand2-$scope.supply2>10?2:1);
       if ($scope.supply1 > $scope.demand1) {
         numberMade1 = 0;
       }
       if ($scope.supply2 > $scope.demand2) {
         numberMade2 = 0;
       }
+      $scope.demand1 -= numberBought1;
+      $scope.demand2 -= numberBought2;
       $scope.supply1 += numberMade1;
       $scope.supply2 += numberMade2;
       $scope.competitorsMade1 = numberMade1;
       $scope.competitorsMade2 = numberMade2;
       if ($scope.supply1 < 0) $scope.supply1 = 0;
       if ($scope.supply2 < 0) $scope.supply2 = 0;
-      $scope.demand1 += Math.floor(8*Math.random()*(Math.random()>(0.5)?$scope.demandMulti:-1))
-      $scope.demand2 += Math.floor(8*Math.random()*(Math.random()>(0.5)?$scope.demandMulti:-1));
+      $scope.demand1 += Math.floor(20*Math.random()*$scope.demandMulti);
+      $scope.demand2 += Math.floor(20*Math.random()*$scope.demandMulti);
       if ($scope.demand1 < 10) $scope.demand1 +=5;
       if ($scope.demand2 < 10) $scope.demand2 +=5;
       if ($scope.demand1 < 0) $scope.demand1 = 0;
@@ -158,7 +173,6 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.profit =  $scope.money - lastMoney;
       $scope.supply1 += parseInt($scope.retail.quantity1);
       $scope.supply2 += parseInt($scope.retail.quantity2);
-      console.log("SUPPLY CHANGING BY " + $scope.retail.quantity1);
       if ($scope.money <= 0) {
         $scope.production.quantity1 = 0;
         $scope.production.quantity2 = 0;
@@ -173,7 +187,6 @@ angular.module('LD34.game', ['ngRoute'])
       $scope.qualityAverage = parseFloat($scope.qualitySum / $scope.ticksPassed);
     
       if ($scope.qualityAverage > 60) {
-        console.log($scope.qualityAverage);
         $scope.allowPresidencyRun = true;
       } else {
         $scope.allowPresidencyRun = false;
@@ -236,11 +249,16 @@ angular.module('LD34.game', ['ngRoute'])
     };
 
     $scope.getPrice1 = function () {
-      return 0.3*$scope.manufactureMulti * ($scope.production.quality/100) * $scope.priceArray1[$scope.dayMax];
+      var x =  0.9*$scope.manufactureMulti * ($scope.production.quality/100) * $scope.priceArray1[$scope.dayMax];
+      if (x < 15) x = 15;
+      return x;
     }
 
     $scope.getPrice2 = function () {
-      return 0.3*$scope.manufactureMulti*($scope.production.quality/100) * $scope.priceArray2[$scope.dayMax];
+      var x =  0.9*$scope.manufactureMulti*($scope.production.quality/100) * $scope.priceArray2[$scope.dayMax];
+      if (x < 15) x = 15;
+      return x;
+
     };
 
     $scope.getMaxProd1 = function() {
